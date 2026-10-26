@@ -1,0 +1,6 @@
+{
+  "name": "Ludo King Pro",
+  "description": "Professional online multiplayer and offline pass-and-play Ludo board game featuring authentic rules, private rooms, smooth animations, and audio effects.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

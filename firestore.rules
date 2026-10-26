@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // Users collection (public profile stats with authenticated write)
+    match /users/{userId} {
+      allow get, list: if true;
+      allow create, update: if isSignedIn() && isValidId(userId) && request.auth.uid == userId
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 50;
+    }
+
+    // Multiplayer Game Rooms collection (accessible for room participants)
+    match /rooms/{roomId} {
+      allow get, list: if true;
+      allow create: if isValidId(roomId)
+        && request.resource.data.code is string
+        && request.resource.data.code.size() <= 10
+        && request.resource.data.hostId is string
+        && request.resource.data.hostId.size() <= 128;
+      allow update: if isValidId(roomId);
+      allow delete: if isValidId(roomId);
+    }
+  }
+}

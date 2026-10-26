@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile data and game statistics",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User ID matching auth UID"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Display name of the user"
+        },
+        "avatar": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Avatar preset identifier"
+        },
+        "isGuest": {
+          "type": "boolean",
+          "description": "Whether the user is playing as guest"
+        },
+        "totalMatches": {
+          "type": "number",
+          "description": "Total matches played"
+        },
+        "wins": {
+          "type": "number",
+          "description": "Total matches won"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "displayName"]
+    },
+    "GameRoom": {
+      "title": "GameRoom",
+      "description": "Multiplayer Ludo game room and synchronized state",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^[A-Z0-9]+$",
+          "description": "Unique room join code"
+        },
+        "hostId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "User ID of host player"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["waiting", "in_progress", "completed", "abandoned"],
+          "description": "Current room lifecycle status"
+        },
+        "maxPlayers": {
+          "type": "number",
+          "description": "Maximum number of players (2 to 4)"
+        },
+        "playerCount": {
+          "type": "number",
+          "description": "Current player count"
+        },
+        "players": {
+          "type": "object",
+          "description": "Map of player IDs to player configurations and statuses"
+        },
+        "gameState": {
+          "type": "object",
+          "description": "Authoritative game state including turns, dice, tokens, and history"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Room creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["code", "hostId", "status", "maxPlayers"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Collection storing public user profiles and career stats"
+    },
+    "/rooms/{roomId}": {
+      "schema": "GameRoom",
+      "description": "Active multiplayer game rooms and synchronized board state"
+    }
+  }
+}
